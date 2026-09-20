@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenMeta - AI Metadata Tool by ShorifMeta Labs</title>
+    <title>Metalabs - Creative Production Tools</title>
     <style>
         :root {
-            --bg-dark: #080a12;
+            --bg-dark: #070913;
+            --nav-bg: #0b0d19;
             --surface-glass: rgba(255, 255, 255, 0.03);
             --border-glass: rgba(255, 255, 255, 0.05);
             --neon-cyan: #00f3ff;
-            --neon-purple: #bc13fe;
+            --neon-purple: #9d4edd;
+            --nav-border: #3c1e59;
             --text-main: #f7f8fc;
             --text-muted: #a0a7b8;
             --gradient-primary: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
@@ -30,284 +32,319 @@
             line-height: 1.6;
         }
 
-        /* Ambient Glow Background */
-        body::before, body::after {
+        /* Ambient Glow */
+        body::before {
             content: '';
             position: fixed;
-            width: 500px;
-            height: 500px;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
+            background: var(--neon-purple);
+            filter: blur(150px);
+            opacity: 0.1;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: -1;
-        }
-        body::before { background: var(--neon-cyan); top: -100px; left: -100px; }
-        body::after { background: var(--neon-purple); bottom: -100px; right: -100px; }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            pointer-events: none;
         }
 
-        header {
+        /* Navbar matched to screenshot */
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0 60px 0;
+            padding: 0 40px;
+            height: 70px;
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--nav-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--neon-purple);
+            text-decoration: none;
+        }
+
+        .logo-section svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--neon-purple);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-main);
+        }
+
+        .nav-links svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-title h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Bento Grid Layout */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 24px;
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 18px;
         }
 
-        .bento-card {
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .product-card {
             background: var(--surface-glass);
             border: 1px solid var(--border-glass);
             backdrop-filter: blur(16px);
             border-radius: 24px;
             padding: 40px;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .bento-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 243, 255, 0.3);
-        }
-
-        /* specific grid items */
-        .hero-section { grid-column: span 8; }
-        .auth-section { grid-column: span 4; }
-        .feature-card { grid-column: span 4; }
-        .pricing-card { grid-column: span 6; text-align: center; }
-
-        h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            line-height: 1.1;
-        }
-
-        h2 { font-size: 24px; margin-bottom: 15px; }
-        
-        p { color: var(--text-muted); margin-bottom: 20px; }
-
-        /* Form Styles */
-        .auth-form {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            min-height: 250px;
         }
 
-        input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-glass);
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(0,243,255,0.05), rgba(157,78,221,0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(157, 78, 221, 0.4);
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.05);
             border-radius: 12px;
-            color: var(--text-main);
-            outline: none;
-            transition: border-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
         }
 
-        input:focus { border-color: var(--neon-cyan); }
-
-        .btn {
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s, transform 0.2s;
+        .product-card h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            position: relative;
         }
 
-        .btn:hover { opacity: 0.9; transform: scale(0.98); }
-
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 20px rgba(188, 19, 254, 0.3);
+        .product-card p {
+            color: var(--text-muted);
+            font-size: 15px;
+            position: relative;
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
+        .arrow-icon {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: var(--neon-cyan);
+        }
+
+        .product-card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            background: var(--surface-glass);
             border: 1px solid var(--border-glass);
-        }
-
-        .form-message {
-            margin-top: 15px;
-            font-size: 14px;
+            border-radius: 24px;
+            padding: 50px;
             text-align: center;
         }
 
-        .price-tag {
-            font-size: 42px;
+        .pricing-section h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .pricing-section p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .price-box {
+            display: inline-block;
+            padding: 30px 50px;
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+            background: rgba(157, 78, 221, 0.05);
+        }
+
+        .price-amount {
+            font-size: 48px;
             font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .price-desc {
             color: var(--neon-cyan);
-            margin: 20px 0;
+            font-weight: 600;
         }
 
         footer {
-            margin-top: 80px;
             text-align: center;
+            padding: 40px 0;
             color: var(--text-muted);
             font-size: 14px;
-            padding-top: 20px;
             border-top: 1px solid var(--border-glass);
+            margin-top: 50px;
         }
 
-        @media (max-width: 900px) {
-            .hero-section, .auth-section, .feature-card, .pricing-card {
-                grid-column: span 12;
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            .navbar {
+                padding: 0 20px;
+            }
+            .nav-links a span {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div class="logo">GenMeta</div>
-    </header>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="logo-section">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+            metalabs
+        </a>
+        <div class="nav-links">
+            <a href="#" class="active">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>Home</span>
+            </a>
+            <a href="#pricing">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>Pricing</span>
+            </a>
+        </div>
+    </nav>
 
-    <div class="bento-grid">
-        <!-- Hero Section -->
-        <div class="bento-card hero-section">
-            <h1>SEO Metadata Generation <br><span style="color: var(--neon-purple);">Powered by AI</span></h1>
-            <p>Generate highly optimized titles, descriptions, and keywords for your microstock graphic assets instantly. Perfect for Adobe Stock and other marketplaces.</p>
-            <div style="display: flex; gap: 15px; margin-top: 30px;">
-                <span style="padding: 8px 16px; background: rgba(0, 243, 255, 0.1); color: var(--neon-cyan); border-radius: 20px; font-size: 14px;">Gemini Pro Integrated</span>
-                <span style="padding: 8px 16px; background: rgba(188, 19, 254, 0.1); color: var(--neon-purple); border-radius: 20px; font-size: 14px;">Zero-Scroll Interface</span>
+    <div class="container">
+        <div class="header-title">
+            <h1>Creative Production Ecosystem</h1>
+            <p>Select a tool to explore features, access dashboards, and manage your workflow.</p>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="bento-grid">
+            <!-- Metalabs Tool Card (GenMeta Replacement) -->
+            <div class="product-card" onclick="window.location.href='metalabs-tool.html'">
+                <div>
+                    <div class="product-icon" style="color: var(--neon-cyan);">M</div>
+                    <h2>Metalabs</h2>
+                    <p>Advanced AI Metadata Generator. Optimize titles, descriptions, and keywords for microstock marketplaces instantly.</p>
+                </div>
+                <div class="arrow-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
+            </div>
+
+            <!-- Icon Sheet Builder Pro Card -->
+            <div class="product-card" onclick="window.location.href='icon-sheet.html'">
+                <div>
+                    <div class="product-icon" style="color: var(--neon-purple);">IS</div>
+                    <h2>Icon Sheet Builder Pro</h2>
+                    <p>Automate repetitive vector workflows. Import, trace, recolor, and export complete icon sheets inside Adobe Illustrator.</p>
+                </div>
+                <div class="arrow-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </div>
             </div>
         </div>
 
-        <!-- Authentication Section -->
-        <div class="bento-card auth-section">
-            <h2>Get Started</h2>
-            <p style="font-size: 14px;">Login or create an account to receive 50 free credits instantly.</p>
-            
-            <form class="auth-form" id="auth-form">
-                <input type="email" id="user-email" placeholder="Email Address" required>
-                <input type="password" id="user-password" placeholder="Password" required>
-                <button type="button" class="btn btn-primary" id="login-btn">Login to App</button>
-                <button type="button" class="btn btn-secondary" id="register-btn">Create Account</button>
-            </form>
-            <div id="form-message" class="form-message"></div>
-        </div>
-
-        <!-- Features -->
-        <div class="bento-card feature-card">
-            <h3 style="color: var(--neon-cyan); margin-bottom: 10px;">Smart Prompting</h3>
-            <p style="font-size: 14px;">Custom AI prompts optimized specifically for Vector Art, Icons, and Images.</p>
-        </div>
-        
-        <div class="bento-card feature-card">
-            <h3 style="color: var(--neon-purple); margin-bottom: 10px;">Batch Processing</h3>
-            <p style="font-size: 14px;">Process entire folders of Halloween frames, monoline icons, and vector files at once.</p>
-        </div>
-
-        <div class="bento-card feature-card">
-            <h3 style="color: var(--neon-cyan); margin-bottom: 10px;">CSV Export</h3>
-            <p style="font-size: 14px;">Export production-ready CSV files formatted for all major microstock agencies.</p>
-        </div>
-
-        <!-- Pricing Sections -->
-        <div class="bento-card pricing-card">
-            <h2>Free Trial</h2>
-            <div class="price-tag">50 Credits</div>
-            <p>Perfect for testing the application.</p>
-            <ul style="list-style: none; color: var(--text-muted); margin-bottom: 20px; text-align: left; display: inline-block;">
-                <li>✓ Full App Access</li>
-                <li>✓ Standard AI Models</li>
-                <li>✓ Metadata Export</li>
-            </ul>
-        </div>
-
-        <div class="bento-card pricing-card" style="border-color: var(--neon-purple); position: relative;">
-            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--gradient-primary); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white;">BEST VALUE</div>
-            <h2>Lifetime Subscription</h2>
-            <div class="price-tag">৳3999</div>
-            <p>One-time payment. Unlimited access forever.</p>
-            <ul style="list-style: none; color: var(--text-muted); margin-bottom: 20px; text-align: left; display: inline-block;">
-                <li>✓ Unlimited Processing</li>
-                <li>✓ Premium API Keys</li>
-                <li>✓ Lifetime Updates</li>
-            </ul>
+        <!-- Pricing Section -->
+        <div id="pricing" class="pricing-section">
+            <h2>Ecosystem Access</h2>
+            <p>Get full lifetime access to the Metalabs platform with a single subscription.</p>
+            <div class="price-box">
+                <div class="price-amount">৳3999</div>
+                <div class="price-desc">Lifetime Subscription</div>
+                <p style="margin-top: 15px; font-size: 14px; margin-bottom: 0;">Unlimited processing, premium features, and lifetime updates.</p>
+            </div>
         </div>
     </div>
 
     <footer>
         Developed by Md. Shoriful Islam © 2026 SHORIFMETA LABS
     </footer>
-</div>
-
-<script>
-    const formMsg = document.querySelector('#form-message');
-    const loginBtn = document.querySelector('#login-btn');
-    const registerBtn = document.querySelector('#register-btn');
-    const emailInput = document.querySelector('#user-email');
-    const passwordInput = document.querySelector('#user-password');
-
-    async function handleAuth(action) {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        if(!email || !password) {
-            formMsg.style.color = '#ff6d78';
-            formMsg.textContent = 'Please enter both email and password.';
-            return;
-        }
-
-        formMsg.style.color = 'var(--neon-cyan)';
-        formMsg.textContent = 'Processing... Please wait.';
-        loginBtn.disabled = true;
-        registerBtn.disabled = true;
-
-        const endpoint = action === 'login' ? '/api/v1/users/app/login' : '/api/v1/users/app/register';
-
-        try {
-            const response = await fetch(`https://genmeta-server.onrender.com${endpoint}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                formMsg.style.color = '#70e3a1';
-                formMsg.textContent = action === 'login' ? 'Login successful! Opening GenMeta...' : 'Account created! 50 Credits added. Opening GenMeta...';
-                
-                // ডেস্কটপ অ্যাপ ওপেন করার লিংক
-                const secretKey = data.data.apiKey;
-                window.location.href = `genmeta://login?token=${secretKey}`;
-            } else {
-                formMsg.style.color = '#ff6d78';
-                formMsg.textContent = 'Error: ' + (data.message || 'Authentication failed');
-            }
-        } catch (error) {
-            formMsg.style.color = '#ff6d78';
-            formMsg.textContent = 'Server connection failed. Is the server running?';
-        } finally {
-            loginBtn.disabled = false;
-            registerBtn.disabled = false;
-        }
-    }
-
-    loginBtn.addEventListener('click', () => handleAuth('login'));
-    registerBtn.addEventListener('click', () => handleAuth('register'));
-</script>
 
 </body>
 </html>
