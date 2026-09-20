@@ -293,5 +293,52 @@
     loginBtn.addEventListener('click', () => handleAuth('login'));
     registerBtn.addEventListener('click', () => handleAuth('register'));
 </script>
+<!-- User Dashboard Dynamic Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userEmail = localStorage.getItem('metalabs_email');
+            const userPlan = localStorage.getItem('metalabs_plan') || 'Free Tier';
+            const userCredits = localStorage.getItem('metalabs_credits') || '50';
+
+            const guestNav = document.getElementById('guest-nav');
+            const userNav = document.getElementById('user-nav');
+
+            if (userEmail) {
+                // User is logged in, show profile dropdown
+                guestNav.style.display = 'none';
+                userNav.style.display = 'inline-block';
+                
+                document.getElementById('user-avatar').textContent = userEmail.charAt(0).toUpperCase();
+                document.getElementById('display-email').textContent = userEmail;
+                document.getElementById('display-plan').textContent = 'Plan: ' + userPlan.toUpperCase();
+                document.getElementById('display-credits').textContent = 'Remaining Credits: ' + userCredits;
+                
+                if(userPlan.toLowerCase() !== 'free') {
+                    const badge = document.getElementById('display-plan');
+                    badge.style.background = 'rgba(188, 19, 254, 0.1)';
+                    badge.style.color = 'var(--neon-purple)';
+                    badge.style.borderColor = 'var(--neon-purple)';
+                    document.getElementById('display-credits').textContent = 'Unlimited Access';
+                }
+            } else {
+                // Not logged in, show login buttons
+                guestNav.style.display = 'flex';
+                userNav.style.display = 'none';
+            }
+
+            // Logout Logic
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    localStorage.clear();
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+    
 </body>
 </html>
