@@ -59,10 +59,14 @@
         .profile-icon:hover { background: var(--neon-purple); box-shadow: 0 0 15px rgba(157,78,221,0.5); }
         
         .dropdown-content {
-            display: none; position: absolute; right: 0; top: 55px;
+            display: none; position: absolute; right: 0; top: 50px;
             background-color: #1a1c29; min-width: 240px; border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             z-index: 1; overflow: hidden;
+        }
+        /* অদৃশ্য ব্রিজ বা Invisible Bridge */
+        .profile-menu::after { 
+            content: ''; position: absolute; top: 100%; left: -20px; right: -20px; height: 20px; 
         }
         .profile-menu:hover .dropdown-content { display: block; }
         
